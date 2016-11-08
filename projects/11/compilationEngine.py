@@ -55,11 +55,11 @@ class compiler:
                 self.vm.writePop('pointer',0)
             self.compileStatements()
         while self.nextToken() in ('method','function','constructor'):
-            kind = self.nextToken()
             self.subScope.init()
             self.whileCnt = -1
             self.ifCnt = -1
-            Type = self.returnTk_advance(2)       #kind type
+            kind = self.nextToken()
+            Type = self.returnTk_advance(2)#kind type
             self.funName = self.returnTk_advance(1)#funName
             self.compileParameterList()#'('paraList')'
             self.returnTk_advance(1)#'{'
@@ -68,9 +68,9 @@ class compiler:
 
     def compileParameterList(self):
         def compileParameter():
+            kind = 'argument'
             Type = self.returnTk_advance(1)#type
             name = self.returnTk_advance(1)#varName
-            kind = 'argument'
             self.subScope.define(kind,Type,name)
         paraCnt = 0
         self.returnTk_advance(1)#'('
@@ -82,8 +82,6 @@ class compiler:
                 compileParameter()#type varName
                 paraCnt += 1
         self.returnTk_advance(1)#')'
-
-
 
     def compileVarDec(self):#similar to compileClassVarDec    
         varCnt = 0 
@@ -97,7 +95,7 @@ class compiler:
                 varCnt += 1
                 name = self.returnTk_advance(1)#varName
                 self.subScope.define(kind,Type,name)
-        funName = self.className+'.'+self.funName
+        funName = self.className +'.'+ self.funName
         self.vm.writeFun(funName,varCnt)
 
     def compileStatements(self):
@@ -115,7 +113,7 @@ class compiler:
 
     def compileLet(self):
         name = self.returnTk_advance(2)#'let'varName
-        if self.nextToken() == '[':
+        if self.nextToken() == '[':#array[index]
             self.returnTk_advance(1)
             self.compileExp()
             self.returnTk_advance(1)#'['exp']'
@@ -129,7 +127,7 @@ class compiler:
             self.vm.writePush('temp',0)
             self.vm.writePop('that',0)
             self.returnTk_advance(1)#';'
-        else:
+        else:#varName
             segment,index = self.findVarInScope(name)
             self.returnTk_advance(1)#'=' 
             self.compileExp()#exp
@@ -139,8 +137,8 @@ class compiler:
     def compileDo(self):
         self.returnTk_advance(1)#'do'
         self.compileExp()#function call
-        self.returnTk_advance(1)#';'
         self.vm.writePop('temp',0) #when do statement calling function must dispose the return value
+        self.returnTk_advance(1)#';'
 
     def compileIf(self):
         self.ifCnt+=1
@@ -162,7 +160,6 @@ class compiler:
             self.vm.writeLabel('IF_END'+str(cnt))
         else:
             self.vm.writeLabel('IF_FALSE'+str(cnt))
-
 
     def compileWhile(self):#similar to compile if
         self.whileCnt+=1
@@ -212,7 +209,7 @@ class compiler:
         if self.parser.tokenType == 'integerConstant':#integer
             num = self.returnTk_advance(1)
             self.vm.writePush('constant',num)
-        elif self.parser.tokenType =='stringConstant':
+        elif self.parser.tokenType =='stringConstant':#string
             string = self.returnTk_advance(1)
             lenth = len(string)
             self.vm.writePush('constant',lenth)
@@ -220,9 +217,9 @@ class compiler:
             for char in string:
                 self.vm.writePush('constant',ord(char))
                 self.vm.writeCall('String.appendChar',2)
-        elif self.nextToken() in self.keywordConst:
-            self.writeKeywordConst(self.nextToken())
-            self.returnTk_advance(1)#keyword
+        elif self.nextToken() in self.keywordConst:#keyword
+            keyword = self.returnTk_advance(1)
+            self.writeKeywordConst(keyword)
         elif self.nextToken() in self.unaryOp:#unaryop term
             op = self.nextToken()
             self.returnTk_advance(1)#unaryop
@@ -241,7 +238,7 @@ class compiler:
             self.returnTk_advance(1)#'['exp']'
         else:#varname|varname[index]|subroutineCall
             temp = self.returnTk_advance(1)
-            if self.nextToken() == '.':
+            if self.nextToken() == '.':#term is a subroutineCall aaa.bbb()
                 Objname = temp
                 funName = self.returnTk_advance(2)#'.' subroutineName
                 if  self.subScope.find(Objname):#call function of an object which in subScope
@@ -256,7 +253,7 @@ class compiler:
                     nArgs = 1
                     index = self.classScope.indexOf(Objname)
                     self.vm.writePush('this',index)
-                else :#call system function or class function
+                else :#call system function or class function or constuctor
                     name = Objname + '.' + funName
                     nArgs = 0
                 nArgs += self.compileExpList()#'('expList')'

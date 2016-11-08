@@ -29,7 +29,7 @@ push constant 0
 pop local 1
 label WHILE_EXP0
 push local 1
-neg
+not
 not
 if-goto WHILE_END0
 label WHILE_EXP1
@@ -115,7 +115,7 @@ label WHILE_EXP2
 push local 0
 push constant 0
 eq
-neg
+not
 not
 if-goto WHILE_END2
 call Keyboard.keyPressed 0
