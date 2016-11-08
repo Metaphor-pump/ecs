@@ -1,0 +1,23 @@
+load Or16Way.hdl,
+output-file Or16Way.out,
+output-list in%B2.16.2 out%B2.1.2;
+
+set in %B0000000000000000,
+eval,
+output;
+
+set in %B1111111111111111,
+eval,
+output;
+
+set in %B1000000000000000,
+eval,
+output;
+
+set in %B0000000100000001,
+eval,
+output;
+
+set in %B0010011000100110,
+eval,
+output;

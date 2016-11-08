@@ -1,0 +1,18 @@
+CHIP JUMP{
+    IN  j1,j2,j3,zr,ng;
+    OUT jump;
+
+    PARTS:
+    Not(in=j1,out=Nj1);Not(in=j2,out=Nj2);Not(in=j3,out=Nj3);Not(in=zr,out=Nzr);Not(in=ng,out=Nng);
+    And8Ways(in[0]=Nj1,in[1]=Nj2,in[2]=j3,in[3]=Nzr,in[4]=Nng,in[5..7]=true,out=jump1);
+    And8Ways(in[0]=Nj1,in[1]=j2,in[2]=Nj3,in[3]=zr,in[4]=Nng,in[5..7]=true,out=jump2);
+    And8Ways(in[0]=Nj1,in[1]=j2,in[2]=j3,in[3]=Nzr,in[4]=Nng,in[5..7]=true,out=jump3);
+    And8Ways(in[0]=Nj1,in[1]=j2,in[2]=j3,in[3]=zr,in[4]=Nng,in[5..7]=true,out=jump4);
+    And8Ways(in[0]=j1,in[1]=Nj2,in[2]=Nj3,in[3]=Nzr,in[4]=ng,in[5..7]=true,out=jump5);
+    And8Ways(in[0]=j1,in[1]=Nj2,in[2]=j3,in[3]=Nzr,in[4]=ng,in[5..7]=true,out=jump6);
+    And8Ways(in[0]=j1,in[1]=Nj2,in[2]=j3,in[3]=Nzr,in[4]=Nng,in[5..7]=true,out=jump7);
+    And8Ways(in[0]=j1,in[1]=j2,in[2]=Nj3,in[3]=zr,in[4]=Nng,in[5..7]=true,out=jump8);
+    And8Ways(in[0]=j1,in[1]=j2,in[2]=Nj3,in[3]=Nzr,in[4]=ng,in[5..7]=true,out=jump9);
+    And8Ways(in[0]=j1,in[1]=j2,in[2]=j3,in[3..7]=true,out=jump10);
+    Or16Ways(in[0]=jump1,in[1]=jump2,in[2]=jump3,in[3]=jump4,in[4]=jump5,in[5]=jump6,in[6]=jump7,in[7]=jump8,in[8]=jump9,in[9]=jump10,in[10..14]=false,out=jump);
+}
