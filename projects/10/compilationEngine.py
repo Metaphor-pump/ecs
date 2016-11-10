@@ -1,7 +1,7 @@
 class compile:
     def __init__(self,parser,filename):
         self.parser = parser
-        self.wfile = open(filename.strip('.jack')+'.xml','w')  
+        self.wfile = open(filename.strip('.jack')+'.my.xml','w')  
         self.nested = 0
         self.op = ('+','-','*','/','&','|','<','>','=')
         self.unaryOp = ('-','~')
@@ -11,14 +11,14 @@ class compile:
         self.wfile.write('  '*self.nested)
         self.wfile.write(Str)
 
-    def nest(self,function,tag):
+    def nest(self,function,tag):#write unterminal's' tag
         self.indentedWrite('<'+tag+'>\n')
         self.nested+=1
         function()
         self.nested-=1
         self.indentedWrite('</'+tag+'>\n')
 
-    def writeTk_Advance(self,x):
+    def writeTk_Advance(self,x):#write terminal's tag and terminal
         for i in range(x):
             self.indentedWrite(self.parser.tagedToken())
             self.parser.advance()

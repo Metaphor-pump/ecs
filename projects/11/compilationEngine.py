@@ -50,32 +50,31 @@ class compiler:
             kind = self.nextToken()
             Type = self.returnTk_advance(2)#kind type
             self.funName = self.returnTk_advance(1)#funName
-            self.compileParameterList()#'('paraList')'
+            self.compileParameterList(kind)#'('paraList')'
             self.returnTk_advance(1)#'{'
             self.compileSubroutineBody(kind)
             self.returnTk_advance(1)#'}'
 
-    def compileParameterList(self):
+    def compileParameterList(self,kind):
         def compileParameter():
             kind = 'argument'
             Type = self.returnTk_advance(1)#type
             name = self.returnTk_advance(1)#varName
             self.subScope.define(kind,Type,name)
-        paraCnt = 0
+        if kind == 'method':
+            self.subScope.define('argument','class','Objname')
         self.returnTk_advance(1)#'('
         if self.nextToken() != ')':#first parameter's name
             compileParameter()#type varName
-            paraCnt += 1
             while self.nextToken() == ',':
                 self.returnTk_advance(1)#','
                 compileParameter()#type varName
-                paraCnt += 1
         self.returnTk_advance(1)#')'
 
     def compileSubroutineBody(self,kind):
         self.compileVarDec()
         if kind == 'constructor':
-            n = len(self.classScope.table)
+            n = self.classScope.varCount('field')
             self.vm.writePush('constant',n)
             self.vm.writeCall('Memory.alloc',1)
             self.vm.writePop('pointer',0)

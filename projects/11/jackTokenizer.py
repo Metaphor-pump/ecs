@@ -9,51 +9,48 @@ class parser:
 
     def advance(self):
         self.token = ''
-        temp = self.rfile.read(1)
-        while temp == ' ' or temp == '\n' or temp == '\t':
-            temp = self.rfile.read(1)
-        if not temp:#end of file
+        char = self.rfile.read(1)
+        while char == ' ' or char == '\n' or char == '\t':
+            char = self.rfile.read(1)
+        if not char:#end of file
             return
-        elif temp == '"':#stringConst
-            temp = self.rfile.read(1)
-            while temp != '"':
-                self.token += temp
-                temp = self.rfile.read(1)
+        elif char == '"':#string
+            char = self.rfile.read(1)
+            while char != '"':
+                self.token += char
+                char = self.rfile.read(1)
             self.tokenType = 'stringConstant'
-            return#string
-        elif temp in self.symbol:#symbol
-            self.token = temp
+            return
+        elif char in self.symbol:#symbol
+            self.token = char
             self.tokenType = 'symbol'
-            return#symbol
-        elif temp.isdigit():#digit
-            self.token += temp
-            temp = self.rfile.read(1)
-            while temp.isdigit():
-                self.token += temp
-                temp = self.rfile.read(1)
+            return
+        elif char.isdigit():#integer
+            self.token += char
+            char = self.rfile.read(1)
+            while char.isdigit():
+                self.token += char
+                char = self.rfile.read(1)
             self.rfile.seek(-1,1)
             self.tokenType = 'integerConstant'
-            return#integer
-        elif temp.isalpha() or temp == '_' or temp.isdigit():
-            while temp.isalpha() or temp == '_' or temp.isdigit():
-                self.token += temp
-                temp = self.rfile.read(1)
-                if self.token in self.keyword:
-                #preread next word is important ,if you not ,for example,identifier 'double' will be incorrectly tokenized as keyword'do' and indentifier 'uble'
-                    if temp == ' ' or temp in self.symbol:
-                        self.tokenType = 'keyword'
-                        self.rfile.seek(-1,1)
-                        return#keyword
+            return
+        elif char.isalpha() or char == '_' or char.isdigit():#indentifier or keyword
+            while char.isalpha() or char == '_' or char.isdigit():
+                self.token += char
+                char = self.rfile.read(1)
             self.rfile.seek(-1,1)
-            self.tokenType = 'identifier'
-            return#indentifier
+            if self.token in self.keyword:
+                self.tokenType = 'keyword'
+            else:
+                self.tokenType = 'identifier'
 
     def uncomment(self):
-        wfile = open(self.filename.split('.')[0]+'.un','w')
         def write(line):
             if line != '\n':
                 wfile.write(line)
+                
         line = self.rfile.readline()
+        wfile = open(self.filename.split('.')[0]+'.un','w')
         while line:
             if '//' in line:
                 line = line.split('//')[0]
