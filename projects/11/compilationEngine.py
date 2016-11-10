@@ -43,17 +43,6 @@ class compiler:
             self.returnTk_advance(1)#';'
         
     def compileSubroutine(self):
-        def compileSubroutineBody(kind):
-            self.compileVarDec()
-            if kind == 'constructor':
-                n = len(self.classScope.table)
-                self.vm.writePush('constant',n)
-                self.vm.writeCall('Memory.alloc',1)
-                self.vm.writePop('pointer',0)
-            elif kind == 'method':
-                self.vm.writePush('argument',0)
-                self.vm.writePop('pointer',0)
-            self.compileStatements()
         while self.nextToken() in ('method','function','constructor'):
             self.subScope.init()
             self.whileCnt = -1
@@ -63,7 +52,7 @@ class compiler:
             self.funName = self.returnTk_advance(1)#funName
             self.compileParameterList()#'('paraList')'
             self.returnTk_advance(1)#'{'
-            compileSubroutineBody(kind)
+            self.compileSubroutineBody(kind)
             self.returnTk_advance(1)#'}'
 
     def compileParameterList(self):
@@ -82,6 +71,18 @@ class compiler:
                 compileParameter()#type varName
                 paraCnt += 1
         self.returnTk_advance(1)#')'
+
+    def compileSubroutineBody(self,kind):
+        self.compileVarDec()
+        if kind == 'constructor':
+            n = len(self.classScope.table)
+            self.vm.writePush('constant',n)
+            self.vm.writeCall('Memory.alloc',1)
+            self.vm.writePop('pointer',0)
+        elif kind == 'method':
+            self.vm.writePush('argument',0)
+            self.vm.writePop('pointer',0)
+        self.compileStatements()
 
     def compileVarDec(self):#similar to compileClassVarDec    
         varCnt = 0 
