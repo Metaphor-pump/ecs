@@ -4,47 +4,43 @@ import code
 import sys
 
 filename = sys.argv[1].split('.')[0]
-output = open(filename+'.hack','w')
-onepass = parser(filename)
-twopass = parser(filename)
-table = Table()
 
-labelCnt = 0
+onepass = parser(filename)
+table = Table()
+lineCnt = 0
 while onepass.hasMoreCommands():
     onepass.advance()
-    while onepass.current == '\n' or onepass.current.startswith('//'):
-        onepass.advance()
+    onepass.Uncomment()
     Type = onepass.commandType()
     if Type == 'L_COMMAND':
         symbol = onepass.symbol()
         if not table.contains(symbol):
-            table.addEntry(symbol,labelCnt)
+            table.addEntry(symbol,lineCnt)
     else:
-        labelCnt += 1
+        lineCnt += 1
 
+twopass = parser(filename)
+output = open(filename+'.hack','w')
 varCnt = 16
 while twopass.hasMoreCommands():
     twopass.advance()
-    while twopass.current == '\n' or twopass.current.startswith('//'):
-        twopass.advance()
-    twopass.Uncomment()
+    onepass.Uncomment()
     Type = twopass.commandType()
     if Type == 'A_COMMAND':
         symbol = twopass.symbol()
         if symbol.isdigit():
-            result = code.tenTobin(symbol)
+            result = code.A_command(symbol)
         else:
             if table.contains(symbol):
-                result = code.tenTobin(table.getAddress(symbol))
+                value = table.valueOf(symbol)
+                result = code.A_command(value)
             else:
                 table.addEntry(symbol,varCnt)
-                result = code.tenTobin(varCnt)
+                result = code.A_command(varCnt)
                 varCnt += 1
         output.write(result+'\n')
     elif Type ==  'C_COMMAND':  
-        dest = code.dest(twopass)
-        comp = code.comp(twopass)
-        jump = code.jump(twopass)
-        output.write('111'+comp+dest+jump+'\n')
+        binary = code.C_command(twopass)
+        output.write('111'+ binary +'\n')
 output.close()
                 

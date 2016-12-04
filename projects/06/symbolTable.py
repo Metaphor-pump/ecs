@@ -12,5 +12,5 @@ class Table(object):
     def contains(self,symbol):
         return self.table.has_key(symbol)
 
-    def getAddress(self,symbol):
+    def valueOf(self,symbol):
         return self.table[symbol]

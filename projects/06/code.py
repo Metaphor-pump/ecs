@@ -20,7 +20,10 @@ def jump(asmparser):
     jumpcode=jumpdict[asmparser.jump()]  
     return jumpcode  
 
-def tenTobin(ten):
+def C_command(asmparser):
+    return self.dest(asmparser) + self.comp(asmparser) + self.jump(asmparser)
+
+def A_command(ten):
     binary=bin(int(ten))[2:]
     binary=binary.zfill(16)
     return binary

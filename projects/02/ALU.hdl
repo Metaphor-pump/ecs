@@ -58,7 +58,7 @@ CHIP ALU {
    Not16(in=fx,out=nf);
    Mux16(a=fx,b=nf,sel=no,out=out1);
    And16(a=out1,b[0..15]=true,out=out);
-   //其他
+   //输出结果的正负性质
    And16(a=out1,b[0..14]=false,b[15]=true,out=ng1);
    Or16Way(in=ng1,out=ng);
 

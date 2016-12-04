@@ -18,7 +18,7 @@ class compile:
         self.nested-=1
         self.indentedWrite('</'+tag+'>\n')
 
-    def writeTk_Advance(self,x):#write terminal's tag and terminal
+    def writeTk_Advance(self,x):#write terminal
         for i in range(x):
             self.indentedWrite(self.parser.tagedToken())
             self.parser.advance()
@@ -34,7 +34,6 @@ class compile:
             self.nest(a,'class')
         
     def compileClassVarDec(self):
-        
         def a():
             self.writeTk_Advance(3)#static or field type varName
             while self.parser.token != ';':
@@ -45,7 +44,7 @@ class compile:
         
     def compileSubroutine(self):
         def a():
-            self.writeTk_Advance(4)#'constructor','function','method' type subroutineName '('
+            self.writeTk_Advance(4)#'constructor'|'function'|'method' type subroutineName '('
             self.compileParameterList()
             self.writeTk_Advance(1)#')'
             self.compileSubroutineBody()

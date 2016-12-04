@@ -253,12 +253,12 @@ class compiler:
                     nArgs = 1
                     index = self.classScope.indexOf(Objname)
                     self.vm.writePush('this',index)
-                else :#call system function or class function or constuctor
+                else :#call system function or class 'function' or constuctor
                     name = Objname + '.' + funName
                     nArgs = 0
                 nArgs += self.compileExpList()#'('expList')'
                 self.vm.writeCall(name,nArgs)
-            elif self.nextToken() == '(':#term is a subroutineCall a()
+            elif self.nextToken() == '(':#term is a subroutineCall bbb()
                 nArgs = 1
                 name = self.className + '.' + temp
                 self.vm.writePush('pointer',0)

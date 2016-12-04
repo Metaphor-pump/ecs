@@ -131,13 +131,13 @@ class writer:
     def writeReturn(self):
         self.output.write(
 '''@LCL\nD=M\n@R13\nM=D\n
-@R13\nD=M\n@5\nD=D-A\nA=D\nD=M\n@R14\nM=D\n
 @SP\nM=M-1\nA=M\nD=M\n@ARG\nA=M\nM=D\n
 @ARG\nD=M+1\n@SP\nM=D\n
 @R13\nD=M\n@1\nD=D-A\nA=D\nD=M\n@THAT\nM=D\n
 @R13\nD=M\n@2\nD=D-A\nA=D\nD=M\n@THIS\nM=D\n
 @R13\nD=M\n@3\nD=D-A\nA=D\nD=M\n@ARG\nM=D\n
 @R13\nD=M\n@4\nD=D-A\nA=D\nD=M\n@LCL\nM=D\n
+@R13\nD=M\n@5\nD=D-A\nA=D\nD=M\n@R14\nM=D\n
 @R14\nA=M\n0;JMP\n''')
         self.output.write('//return\n')#comment
 

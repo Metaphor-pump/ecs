@@ -9,10 +9,8 @@ class parser(object):
         self.current = self.input.readline()
 
     def hasMoreCommands(self):
-        if self.current:
-            return 1
-        else:
-            return 0
+        return self.current
+
 
     def commandType(self):
         if self.current.find('@')>=0:
@@ -55,6 +53,5 @@ class parser(object):
             return 'null'
 
     def Uncomment(self):
-        while self.current == '\n' or self.current.startswith('//'):
+        while self.current == '\n' or self.current.startswith('//'):      
             self.advance()
-        self.current=self.current.split('//')[0]
